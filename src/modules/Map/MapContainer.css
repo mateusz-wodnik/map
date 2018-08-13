@@ -1,0 +1,6 @@
+.map {
+  display: flex; }
+  .map__side {
+    flex: 1; }
+  .map__instance {
+    flex: 2; }
