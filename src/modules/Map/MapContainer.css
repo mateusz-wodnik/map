@@ -1,6 +1,8 @@
 .map {
   display: flex; }
-  .map__side {
-    flex: 1; }
+  .map__sidebar {
+    flex: 1;
+    display: flex;
+    flex-flow: column; }
   .map__instance {
     flex: 2; }

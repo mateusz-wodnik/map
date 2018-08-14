@@ -13,43 +13,74 @@ class MapContainer extends Component {
 		this.state = {
 			map: {},
 			google: '',
-			markers: [],
+			markers: {},
 			polygon: null
 		}
 		googleMapInit.bind(this)({styles: mapStyles})
 	}
 
-	componentDidMount = () => {
-		this.yelpRequest('term=bowling&latitude=40.7413549&longitude=-73.9980244&limit=50')
-	}
-
 	yelpRequest = (query) => {
-		fetch(`${yelp.url}/${query}`)
+		// return markers and query to decide in handler what to do with them
+		return fetch(`${yelp.url}/${query}`)
 			.then(res => res.json())
 			.then(res => {
 				const markers = res.businesses.map(business => {
 					const { coordinates, name, phone } = business
 					const { latitude, longitude } = coordinates
-					// console.log(latitude,longitude)
 					const marker = {
 						position: {lat: latitude, lng: longitude},
 						name,
 						phone
 					}
-					return this.newMarker(marker)
+					return this.newMarker(marker, true)
 				})
-				this.setState({ markers })
+				return {query, markers}
 			})
 			.catch(console.error)
+	}
+
+	handleSearch = (term) => {
+		// handling recived markers
+		this.yelpRequest(`term=${term.toString().trim()}&latitude=40.7413549&longitude=-73.9980244&limit=10`)
+			.then(res => {
+				const markers = res.markers.map(marker => {
+					marker.setMap(this.map)
+					return marker
+				})
+				this.setState({markers: {...this.state.markers, [res.query]: markers}})
+			})
+			.catch(console.error)
+	}
+
+	handleSelect = (e) => {
+		if(e.target.checked) {
+			this.state.markers[e.target.id].map(marker => marker.setMap(this.map))
+		} else {
+			this.state.markers[e.target.id].map(marker => marker.setMap(null))
+		}
 	}
 
 	render() {
 		return (
 			<section className="map">
 				<aside className="map__sidebar">
+					<button onClick={() => console.log(this.state)}>state</button>
 					<button onClick={() => this.showMarker()}>show</button>
 					<button onClick={() => this.hideMarker()}>hide</button>
 					<button onClick={() => this.toggleDrawing(this.drawingManager)}>draw</button>
+					<form onSubmit={e => {
+						e.preventDefault()
+						this.handleSearch(e.target.search.value)
+					}}>
+						<input type="text" name="search" id="search" placeholder="search"/>
+						<button type="submit">search</button>
+					</form>
+					<div name="markers" id="markers" onChange={this.handleSelect}>
+						{Object.keys(this.state.markers).map(name => <div>
+							<label htmlFor={name}>{name}</label>
+							<input type={"checkbox"} key={name} id={name} defaultChecked={true} />
+						</div>)}
+					</div>
 				</aside>
 				<Map />
 			</section>

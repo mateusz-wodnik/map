@@ -1,4 +1,4 @@
-export function newMarker (data, streetView) {
+export function newMarker (data, showStreetView) {
 	const { position, name } = data
 	const marker = new this.google.maps.Marker({
 		position,
@@ -6,7 +6,7 @@ export function newMarker (data, streetView) {
 		animation: this.google.maps.Animation.DROP,
 	})
 	marker.addListener('click', () => {
-		if(streetView) {
+		if(showStreetView) {
 			streetView(marker, this)
 		} else {
 			this.infoWindow.setContent(
@@ -20,14 +20,14 @@ export function newMarker (data, streetView) {
 	return marker
 }
 
-export function showMarker() {
+export function showMarker(name) {
 	const bounds = new this.google.maps.LatLngBounds()
-	const markers = this.state.markers.map(marker => {
+	const markers = this.state.markers[name].map(marker => {
 		marker.setMap(this.map)
 		bounds.extend(marker.position)
 		return marker
 	})
-	this.setState({markers})
+	this.setState({markers: {...this.state.markers, [name]: markers}})
 	this.map.fitBounds(bounds)
 }
 
