@@ -62,4 +62,34 @@ export function toggleDrawing (manager) {
 
 /*******************************************************************************/
 
+/**
+ * Distance Matrix
+ */
 
+export function getDistance(config = {}) {
+	const {
+		origins = ['Washington,DC'],
+		destinations = ['New+York+City,NY'],
+		mode = 'BICYCLING',
+		avoid = 'highways',
+	} = config
+	console.log(this.google, mode)
+	this.distanceMatrixService.getDistanceMatrix({
+		origins,
+		destinations,
+		travelMode: this.google.maps.TravelMode[mode],
+		unitSystem: this.google.maps.UnitSystem.IMPERIAL
+	}, (distance, status) => {
+		if(status !== this.google.maps.DistanceMatrixStatus.OK) return
+		this.setState({
+			distance: {
+				text: distance.rows[0].elements[0].distance.text,
+				duration: distance.rows[0].elements[0].duration.text
+			}
+		})
+	})
+
+	// fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?mode=${mode}&avoid=${avoid}&units=imperial&origins=${origins}&destinations=${destinations}`)
+	// 	.then(res => res.json())
+	// 	.then(distance => this.setState({distance}))
+}

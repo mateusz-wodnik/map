@@ -42,7 +42,11 @@ class MapContainer extends Component {
 
 	handleSearch = (term) => {
 		// handling recived markers
-		this.yelpRequest(`term=${term.toString().trim()}&latitude=40.7413549&longitude=-73.9980244&limit=10`)
+		const position = {
+			lat: 51.5074,
+			lng: 0
+		}
+		this.yelpRequest(`term=${term.toString().trim()}&latitude=${position.lat}&longitude=${position.lng}&limit=10`)
 			.then(res => {
 				const markers = res.markers.map(marker => {
 					marker.setMap(this.map)
@@ -61,6 +65,15 @@ class MapContainer extends Component {
 		}
 	}
 
+	handleDistance = () => {
+		if(this.state.selected.length < 2) return alert('You have to select at least two point on the map')
+		const selected = this.state.selected
+		this.getDistance({
+			origins: [{lat: selected[0].position.lat(), lng: selected[0].position.lng()}],
+			destinations: [{lat: selected[1].position.lat(), lng: selected[1].position.lng()}]
+		})
+	}
+
 	render() {
 		return (
 			<section className="map">
@@ -76,6 +89,15 @@ class MapContainer extends Component {
 						<input type="text" name="search" id="search" placeholder="search"/>
 						<button type="submit">search</button>
 					</form>
+					<button onClick={this.handleDistance}>get distance</button>
+					<div>
+						{this.state.distance ?
+							<div>
+								<p>{this.state.distance.text}</p>
+								<p>{this.state.distance.duration}</p>
+							</div>
+							: 'select points'}
+					</div>
 					<div name="markers" id="markers" onChange={this.handleSelect}>
 						{Object.keys(this.state.markers).map(name => <div>
 							<label htmlFor={name}>{name}</label>
