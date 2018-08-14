@@ -14,7 +14,8 @@ class MapContainer extends Component {
 			map: {},
 			google: '',
 			markers: {},
-			polygon: null
+			polygon: null,
+			selected: []
 		}
 		googleMapInit.bind(this)({styles: mapStyles})
 	}
@@ -32,7 +33,7 @@ class MapContainer extends Component {
 						name,
 						phone
 					}
-					return this.newMarker(marker, true)
+					return this.newMarker(marker, false)
 				})
 				return {query, markers}
 			})

@@ -6,6 +6,8 @@ export function newMarker (data, showStreetView) {
 		animation: this.google.maps.Animation.DROP,
 	})
 	marker.addListener('click', () => {
+		console.log(marker.name)
+		handleSelectMarker.bind(this)(marker)
 		if(showStreetView) {
 			streetView(marker, this)
 		} else {
@@ -18,6 +20,18 @@ export function newMarker (data, showStreetView) {
 		this.infoWindow.open(this.map, marker)
 	})
 	return marker
+}
+
+function handleSelectMarker(marker) {
+	const item = this.state.selected.find(item => item.title === marker.title)
+	console.log(item)
+	if(item) {
+		item.setIcon('https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png')
+		this.setState({selected: this.state.selected.filter(item => item.title !== marker.title)})
+		return
+	}
+	marker.setIcon('http://maps.google.com/mapfiles/kml/paddle/orange-circle.png')
+	this.setState({selected: [...this.state.selected, marker]})
 }
 
 export function showMarker(name) {
