@@ -1,0 +1,26 @@
+.searches__header {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  padding: 10px 0; }
+
+.searches__name {
+  text-transform: uppercase;
+  margin: 0 0 0 10px; }
+
+.searches__term {
+  min-height: 200px;
+  max-height: 400px;
+  overflow: auto; }
+
+.searches__list {
+  padding: 15px; }
+
+.searches__marker {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px solid; }
+  .searches__marker p {
+    margin: 0; }

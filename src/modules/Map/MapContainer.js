@@ -3,9 +3,11 @@ import Map from './Map';
 import { yelp } from '../../env/variables'
 import mapStyles from './styles/assasinsCreed'
 import './MapContainer.css'
+import Searches from './Searches'
 
 import googleMapInit from './_utils/googleMapsInitializer'
 import { newMarker, showMarker, hideMarker } from './_utils/marker'
+import { getDistance } from './_utils/map'
 
 class MapContainer extends Component {
 	constructor(props) {
@@ -13,14 +15,14 @@ class MapContainer extends Component {
 		this.state = {
 			map: {},
 			google: '',
-			markers: {},
+			markers: [],
 			polygon: null,
 			selected: []
 		}
 		googleMapInit.bind(this)({styles: mapStyles})
 	}
 
-	yelpRequest = (query) => {
+	yelpRequest = (query, term = '') => {
 		// return markers and query to decide in handler what to do with them
 		return fetch(`${yelp.url}/${query}`)
 			.then(res => res.json())
@@ -31,6 +33,7 @@ class MapContainer extends Component {
 					const marker = {
 						position: {lat: latitude, lng: longitude},
 						name,
+						term,
 						phone
 					}
 					return this.newMarker(marker, false)
@@ -44,15 +47,39 @@ class MapContainer extends Component {
 		// handling recived markers
 		const position = {
 			lat: 51.5074,
-			lng: 0
+			lng: -0.1269
 		}
-		this.yelpRequest(`term=${term.toString().trim()}&latitude=${position.lat}&longitude=${position.lng}&limit=10`)
+		term = term.toString().trim()
+		this.yelpRequest(`term=${term}&latitude=${position.lat}&longitude=${position.lng}&limit=25`, term)
 			.then(res => {
+				let destinations = []
 				const markers = res.markers.map(marker => {
 					marker.setMap(this.map)
+					destinations.push({
+						lat: marker.position.lat(),
+						lng: marker.position.lng(),
+					})
 					return marker
 				})
-				this.setState({markers: {...this.state.markers, [res.query]: markers}})
+				this.setState({markers: {
+						...this.state.markers,
+						[term]: markers
+					}}, () => {
+					this.getDistance({
+						origins: [{ lat: 51.5074, lng: -0.1269 }],
+						destinations
+					}, (data) => {
+						const markers = this.state.markers[term].map((marker, idx) => {
+							marker.destination = data.rows[0].elements[idx]
+							return marker
+						})
+						this.setState({
+							markers: {
+								...this.state.markers,
+								[term]: markers
+							}})
+					})
+				})
 			})
 			.catch(console.error)
 	}
@@ -98,12 +125,7 @@ class MapContainer extends Component {
 							</div>
 							: 'select points'}
 					</div>
-					<div name="markers" id="markers" onChange={this.handleSelect}>
-						{Object.keys(this.state.markers).map(name => <div>
-							<label htmlFor={name}>{name}</label>
-							<input type={"checkbox"} key={name} id={name} defaultChecked={true} />
-						</div>)}
-					</div>
+					<Searches markers={this.state.markers}/>
 				</aside>
 				<Map />
 			</section>

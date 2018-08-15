@@ -4,7 +4,7 @@ import { drawing, toggleDrawing, getDistance } from './map'
 
 function googleMapInit (config) {
 	const {
-		center = { lat: 51.5074, lng: 0 },
+		center = { lat: 51.5074, lng: -0.1269 },
 		zoom = 13,
 		styles = {},
 	} = config

@@ -1,12 +1,16 @@
+import { getDistance } from './map'
+
 export function newMarker (data, showStreetView) {
-	const { position, name } = data
+	const { position, name, phone, term } = data
 	const marker = new this.google.maps.Marker({
 		position,
 		title: name,
+		term,
+		phone,
 		animation: this.google.maps.Animation.DROP,
 	})
 	marker.addListener('click', () => {
-		console.log(marker.name)
+		console.log(marker)
 		handleSelectMarker.bind(this)(marker)
 		if(showStreetView) {
 			streetView(marker, this)
