@@ -2,6 +2,7 @@ import { getDistance } from './map'
 
 export function newMarker (data, showStreetView) {
 	const { position, name, phone, term } = data
+	// Create new marker
 	const marker = new this.google.maps.Marker({
 		position,
 		title: name,
@@ -9,9 +10,10 @@ export function newMarker (data, showStreetView) {
 		phone,
 		animation: this.google.maps.Animation.DROP,
 	})
+	// Add click listener to marker
 	marker.addListener('click', () => {
-		console.log(marker)
 		handleSelectMarker.bind(this)(marker)
+		// Add street view in info window
 		if(showStreetView) {
 			streetView(marker, this)
 		} else {
@@ -26,9 +28,15 @@ export function newMarker (data, showStreetView) {
 	return marker
 }
 
+/**
+ * Marker on click method which captures clicked
+ * marker and add it to "selected" array in state.
+ * It changes selected marker icon on first click
+ * and removes it on second click.
+ * @param marker
+ */
 function handleSelectMarker(marker) {
 	const item = this.state.selected.find(item => item.title === marker.title)
-	console.log(item)
 	if(item) {
 		item.setIcon('https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png')
 		this.setState({selected: this.state.selected.filter(item => item.title !== marker.title)})
@@ -38,23 +46,26 @@ function handleSelectMarker(marker) {
 	this.setState({selected: [...this.state.selected, marker]})
 }
 
-export function showMarker(name) {
-	const bounds = new this.google.maps.LatLngBounds()
-	const markers = this.state.markers[name].map(marker => {
+export function showMarker(markers=[]) {
+	const updatedMarkers = markers.map(marker => {
 		marker.setMap(this.map)
-		bounds.extend(marker.position)
 		return marker
 	})
-	this.setState({markers: {...this.state.markers, [name]: markers}})
-	this.map.fitBounds(bounds)
+	return updatedMarkers
 }
 
-export function hideMarker() {
-	const markers = this.state.markers.map(marker => {
+export function hideMarker(markers=[]) {
+	const updatedMarkers = markers.map(marker => {
 		marker.setMap(null)
 		return marker
 	})
-	this.setState({markers})
+	return updatedMarkers
+}
+
+export function fitBounds(markers) {
+	const bounds = new this.google.maps.LatLngBounds()
+	markers.forEach(marker => bounds.extend(marker.position))
+	this.map.fitBounds(bounds)
 }
 
 export const streetView = (marker, env) => {

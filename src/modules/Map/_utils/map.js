@@ -1,10 +1,11 @@
+import {dictionaryToArray} from './dictionaryHandler'
+
 /**
  * Drawing polygons initializer
  * @param google
  * @param env
  * @return {*}
  */
-
 export function drawing(google, env) {
 	const maps = google.maps
 	const drawingManager = new maps.drawing.DrawingManager({
@@ -21,6 +22,7 @@ export function drawing(google, env) {
 	drawingManager.addListener('overlaycomplete', (e) => {
 		if(env.state.polygon) {
 			env.state.polygon.setMap(null)
+			console.log(env.state.polygon)
 			env.hideMarker()
 		}
 
@@ -41,7 +43,7 @@ export function drawing(google, env) {
 }
 
 export const searchWithinPolygon = (env) => {
-	env.state.markers.forEach(marker => {
+	dictionaryToArray(env.state.markers).forEach(marker => {
 		if(env.google.maps.geometry.poly.containsLocation(marker.position, env.state.polygon)) {
 			marker.setMap(env.map)
 		} else {

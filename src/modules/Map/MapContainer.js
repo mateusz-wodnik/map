@@ -1,13 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, createContext } from 'react';
 import Map from './Map';
 import { yelp } from '../../env/variables'
 import mapStyles from './styles/assasinsCreed'
 import './MapContainer.css'
-import Searches from './Searches'
+import SearchesContainer from './components/Searches/SearchesContainer'
 
 import googleMapInit from './_utils/googleMapsInitializer'
 import { newMarker, showMarker, hideMarker } from './_utils/marker'
 import { getDistance } from './_utils/map'
+import { yelpRequest } from './actions/SearchesActions'
+
+const MapContext = createContext('elo')
+export const MapProvider = MapContext.Provider
+export const MapConsumer = MapContext.Consumer
 
 class MapContainer extends Component {
 	constructor(props) {
@@ -15,32 +20,11 @@ class MapContainer extends Component {
 		this.state = {
 			map: {},
 			google: '',
-			markers: [],
+			markers: {},
 			polygon: null,
 			selected: []
 		}
 		googleMapInit.bind(this)({styles: mapStyles})
-	}
-
-	yelpRequest = (query, term = '') => {
-		// return markers and query to decide in handler what to do with them
-		return fetch(`${yelp.url}/${query}`)
-			.then(res => res.json())
-			.then(res => {
-				const markers = res.businesses.map(business => {
-					const { coordinates, name, phone } = business
-					const { latitude, longitude } = coordinates
-					const marker = {
-						position: {lat: latitude, lng: longitude},
-						name,
-						term,
-						phone
-					}
-					return this.newMarker(marker, false)
-				})
-				return {query, markers}
-			})
-			.catch(console.error)
 	}
 
 	handleSearch = (term) => {
@@ -50,7 +34,7 @@ class MapContainer extends Component {
 			lng: -0.1269
 		}
 		term = term.toString().trim()
-		this.yelpRequest(`term=${term}&latitude=${position.lat}&longitude=${position.lng}&limit=25`, term)
+		yelpRequest.bind(this)(`term=${term}&latitude=${position.lat}&longitude=${position.lng}&limit=25`, term)
 			.then(res => {
 				let destinations = []
 				const markers = res.markers.map(marker => {
@@ -84,12 +68,9 @@ class MapContainer extends Component {
 			.catch(console.error)
 	}
 
-	handleSelect = (e) => {
-		if(e.target.checked) {
-			this.state.markers[e.target.id].map(marker => marker.setMap(this.map))
-		} else {
-			this.state.markers[e.target.id].map(marker => marker.setMap(null))
-		}
+	updateState = (update) => {
+		console.log(update: update)
+		this.setState(update)
 	}
 
 	handleDistance = () => {
@@ -102,33 +83,51 @@ class MapContainer extends Component {
 	}
 
 	render() {
+		const {
+			markers,
+			distance
+		} = this.state
 		return (
-			<section className="map">
-				<aside className="map__sidebar">
-					<button onClick={() => console.log(this.state)}>state</button>
-					<button onClick={() => this.showMarker()}>show</button>
-					<button onClick={() => this.hideMarker()}>hide</button>
-					<button onClick={() => this.toggleDrawing(this.drawingManager)}>draw</button>
-					<form onSubmit={e => {
-						e.preventDefault()
-						this.handleSearch(e.target.search.value)
-					}}>
-						<input type="text" name="search" id="search" placeholder="search"/>
-						<button type="submit">search</button>
-					</form>
-					<button onClick={this.handleDistance}>get distance</button>
-					<div>
-						{this.state.distance ?
-							<div>
-								<p>{this.state.distance.text}</p>
-								<p>{this.state.distance.duration}</p>
-							</div>
-							: 'select points'}
-					</div>
-					<Searches markers={this.state.markers}/>
-				</aside>
-				<Map />
-			</section>
+			<MapProvider value={{
+				markers: markers,
+				google: this.google,
+				map: this.map,
+				actions: {
+					showMarker: showMarker.bind(this),
+					hideMarker: hideMarker.bind(this),
+				},
+				updateState: this.updateState
+			}}>
+				<section className="map">
+					<aside className="map__sidebar">
+						<button onClick={() => console.log(this.state)}>state</button>
+						<button onClick={() => this.showMarker(markers.coffe)}>show</button>
+						<button onClick={() => this.hideMarker(markers.coffe)}>hide</button>
+						<button onClick={() => this.toggleDrawing(this.drawingManager)}>draw</button>
+						<form onSubmit={e => {
+							e.preventDefault()
+							this.handleSearch(e.target.search.value)
+						}}>
+							<input type="text" name="search" id="search" placeholder="search"/>
+							<button type="submit">search</button>
+						</form>
+						<button onClick={this.handleDistance}>get distance</button>
+						<div>
+							{distance ?
+								<div>
+									<p>{distance.text}</p>
+									<p>{distance.duration}</p>
+								</div>
+								: 'select points'}
+						</div>
+						<SearchesContainer updateState={this.updateState}
+															 showMarker={this.showMarker}
+															 hideMarker={this.hideMarker}
+						/>
+					</aside>
+					<Map />
+				</section>
+			</MapProvider>
 		)
 	}
 }
