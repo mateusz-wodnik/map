@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Searches from './Searches'
 
-import { MapConsumer } from '../../MapContainer'
+import { MapConsumer } from '../Map/MapContainer'
 
 class SearchesContainer extends Component {
 	handleToggleCategory = (e) => {

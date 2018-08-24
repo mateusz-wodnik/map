@@ -5,7 +5,8 @@ import { MapConsumer } from '../../../MapContainer'
 class InfoWindow extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
-		const { google, map, infoWindowMarker, updateState } = this.props.context
+		const { google, map, state, updateState } = this.props.context
+		const { infoWindowMarker } = state
 
 		if(prevProps.context.google !== google) {
 			this.infoWindow = new google.maps.InfoWindow()

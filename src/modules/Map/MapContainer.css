@@ -1,11 +1,13 @@
-.map {
+.map-container {
   display: flex; }
-  .map__sidebar {
-    flex: 1;
-    display: flex;
-    flex-flow: column; }
-  .map__instance {
-    flex: 2; }
+
+.map__sidebar {
+  flex: 1;
+  display: flex;
+  flex-flow: column; }
+
+.map__instance {
+  flex: 2; }
 
 #map {
   position: sticky !important;
