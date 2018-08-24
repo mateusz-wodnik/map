@@ -1,14 +1,14 @@
 import React from 'react';
 import { MapConsumer } from '../Map/MapContainer'
+import SearchesContainer from '../Searches/SearchesContainer'
+
 
 const Sidebar = ({context}) => {
-	const { state, toggleMarkers, handleSearch, toggleDrawing, drawingManager } = context
-	const { markers, distance } = state
+	const { state, handleSearch, toggleDrawing, drawingManager } = context
+	const { distance } = state
 	return(
 		<aside className="map__sidebar">
 			<button onClick={() => console.log(state)}>state</button>
-			<button onClick={() => toggleMarkers({markers: [...markers.coffe, ...markers.bowling]})}>show</button>
-			<button onClick={() => toggleMarkers({markers: [...markers.coffe, ...markers.bowling]}, false)}>hide</button>
 			<button onClick={() => toggleDrawing(drawingManager)}>draw</button>
 			<form onSubmit={e => {
 				e.preventDefault()
@@ -27,10 +27,7 @@ const Sidebar = ({context}) => {
 					: 'select points'}
 			</div>
 
-			{/*<SearchesContainer updateState={this.updateState}*/}
-			{/*showMarker={this.showMarker}*/}
-			{/*hideMarker={this.hideMarker}*/}
-			{/*/>*/}
+			<SearchesContainer />
 		</aside>
 	)
 }

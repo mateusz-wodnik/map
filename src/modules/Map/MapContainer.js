@@ -69,10 +69,6 @@ class MapContainer extends Component {
 		this.setState(update)
 	}
 
-	handleInfo = (e) => {
-		console.log(e)
-	}
-
 	handleDistance = () => {
 		if(this.state.selected.length < 2) return alert('You have to select at least two point on the map')
 		const selected = this.state.selected
@@ -83,8 +79,7 @@ class MapContainer extends Component {
 	}
 
 	toggleMarkers = (params={}, active=true) => {
-		const { marker={}, markers } = params
-		const { term, name } = marker
+		const { markers, term, name } = params
 		const stateMarkers = this.state.markers
 
 		if(markers) {

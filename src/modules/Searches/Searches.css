@@ -10,13 +10,16 @@
   text-transform: uppercase;
   margin: 0 0 0 10px; }
 
-.searches__term {
-  min-height: 200px;
-  max-height: 400px;
+.searches__term:hover .searches__list {
+  padding: 15px;
+  height: 300px;
   overflow: auto; }
 
 .searches__list {
-  padding: 15px; }
+  transition: 0.5s;
+  height: 0;
+  padding: 0 15px;
+  overflow: hidden; }
 
 .searches__marker {
   margin-bottom: 10px;
