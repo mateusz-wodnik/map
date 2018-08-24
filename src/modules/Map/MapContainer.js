@@ -44,14 +44,13 @@ class MapContainer extends Component {
 				const markers = res.businesses.map(business => {
 					const { coordinates, name, phone } = business
 					const { latitude, longitude } = coordinates
-					const marker = {
+					return {
 						position: {lat: latitude, lng: longitude},
 						name,
 						term,
 						phone,
 						active: true
 					}
-					return marker
 				})
 				this.setState({
 					markers: {

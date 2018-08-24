@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Searches from './Searches'
 
 import { MapConsumer } from '../Map/MapContainer'
+import Search from './Search'
 
 class SearchesContainer extends Component {
 
@@ -22,11 +23,7 @@ class SearchesContainer extends Component {
 	render() {
 		const { markers } = this.props.context
 
-		return(
-			<Searches toggleMarkers={this.handleToggle}
-								markers={markers}
-			/>
-		)
+		return <Searches toggleMarkers={this.handleToggle} markers={markers} />
 	}
 }
 

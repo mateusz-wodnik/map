@@ -1,7 +1,8 @@
 import React from 'react';
 import './Searches.css'
+import Search from './Search'
 
-const Searches = ({toggleMarkers, markers}) => (
+const Searches = ({toggleMarkers, markers}, children) => (
 	<section className="searches" onChange={toggleMarkers}>
 		{Object.keys(markers).map((name, idx) => (
 			<div key={name + idx} className={`searches__term searches__term--${name}`}>
@@ -16,19 +17,10 @@ const Searches = ({toggleMarkers, markers}) => (
 				</header>
 				<section className="searches__list">
 					{markers[name].map((marker, idx) => (
-						<article key={marker.name + idx} className="searches__marker">
-							<p>{marker.name}</p>
-							<small>{marker.phone}</small>
-							<p>{marker.destination && marker.destination.distance.text}</p>
-							<p>{marker.destination && marker.destination.duration.text}</p>
-							<input type="checkbox"
-										 name="marker"
-										 id={marker.name}
-										 data-term={name}
-										 className="searches__toggle searches__toggle--marker"
-										 defaultChecked={marker.active}
-							/>
-						</article>
+						<Search key={marker.name+idx}
+										term={name}
+										marker={marker}
+						/>
 					))}
 				</section>
 			</div>

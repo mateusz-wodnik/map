@@ -1,5 +1,5 @@
 import { google } from '../../../env/variables'
-import { newMarker, showMarker, hideMarker } from './marker'
+import { newMarker } from './marker'
 import { drawing, toggleDrawing, getDistance } from './map'
 
 function googleMapInit (config) {
@@ -24,12 +24,9 @@ function googleMapInit (config) {
 		this.map = map
 		this.google = google
 		this.newMarker = newMarker
-		this.showMarker = showMarker
-		this.hideMarker = hideMarker
 		this.toggleDrawing = toggleDrawing
 		this.drawingManager = drawingManager
 		this.distanceMatrixService = new google.maps.DistanceMatrixService()
-		// this.streetViewService = new google.maps.StreetViewService()
 		this.getDistance = getDistance
 	}
 }
