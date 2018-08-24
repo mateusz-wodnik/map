@@ -2,7 +2,7 @@ import React from 'react';
 import './Searches.css'
 import Search from './Search'
 
-const Searches = ({toggleMarkers, markers}, children) => (
+const Searches = ({toggleMarkers, markers}) => (
 	<section className="searches" onChange={toggleMarkers}>
 		{Object.keys(markers).map((name, idx) => (
 			<div key={name + idx} className={`searches__term searches__term--${name}`}>

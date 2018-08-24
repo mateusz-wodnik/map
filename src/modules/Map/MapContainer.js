@@ -11,6 +11,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import Marker from './components/Marker/Marker'
 import InfoWindow from './components/Marker/elements/InfoWindow'
 import StreetView from './components/StreetView/StreetView'
+import Distance from './components/Distance/Distance'
 
 import { dictionaryToArray, arrayToDictionary } from './_utils/dictionaryHandler'
 import { yelpTermRequest } from './_utils/yelpApiCaller'
@@ -88,7 +89,6 @@ class MapContainer extends Component {
 				}
 				return { ...stateMarker, active: !active }
 			})
-			console.log(arrayToDictionary(arrayState, 'term'))
 			return this.setState({
 				markers: { ...stateMarkers, ...arrayToDictionary(arrayState, 'term') }
 			})
@@ -111,7 +111,7 @@ class MapContainer extends Component {
 	}
 
 	render() {
-		const { markers, distance, infoWindowMarker } = this.state
+		const { markers, distance, infoWindowMarker, selected } = this.state
 		return (
 			<MapProvider value={{
 				google: this.google,
@@ -123,6 +123,7 @@ class MapContainer extends Component {
 				infoWindowMarker,
 				toggleMarkers: this.toggleMarkers,
 				state: this.state,
+				selected: selected,
 				updateState: this.updateState,
 			}}>
 				<section className="map-container">
@@ -135,6 +136,7 @@ class MapContainer extends Component {
 							<p>{infoWindowMarker.name}</p>
 							<StreetView position={infoWindowMarker.position}/>
 						</InfoWindow>
+						<Distance />
 					</Map>
 				</section>
 			</MapProvider>
