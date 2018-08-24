@@ -80,7 +80,7 @@ export const streetView = (marker, env) => {
 			env.infoWindow.setContent(
 				`<div>
 						<h2>${marker.title}</h2>
-						<div style="width: 300px; height: 300px" id="pano"></div>
+						<div style="width: 300px; height: 300px" id="panorama"></div>
 					</div>`
 			)
 			const panoramaOptions = {
@@ -90,15 +90,47 @@ export const streetView = (marker, env) => {
 					pitch: 30,
 				}
 			}
-			const panorama = new maps.StreetViewPanorama(document.querySelector('#pano'), panoramaOptions)
+			return new maps.StreetViewPanorama(document.querySelector('#panorama'), panoramaOptions)
 		} else {
-			env.infoWindow.setContent(
-				`<div>
-						<h2>${marker.title}</h2>
-						<p>No Street View Found</p>
-					</div>`
-			)
+			return `<p>No Street View Found</p>`
 		}
 	}
 	streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView)
 }
+
+
+//
+// export const streetView = (marker, env) => {
+// 	const maps = env.google.maps
+// 	const streetViewService = new maps.StreetViewService()
+// 	const radius = 50
+//
+// 	const getStreetView = (data, status) => {
+// 		if(status === maps.StreetViewStatus.OK) {
+// 			const nearStreetViewLocation = data.location.latLng;
+// 			const heading = maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position)
+// 			env.infoWindow.setContent(
+// 				`<div>
+// 						<h2>${marker.title}</h2>
+// 						<div style="width: 300px; height: 300px" id="panorama"></div>
+// 					</div>`
+// 			)
+// 			const panoramaOptions = {
+// 				position: nearStreetViewLocation,
+// 				pov: {
+// 					heading,
+// 					pitch: 30,
+// 				}
+// 			}
+// 			return new maps.StreetViewPanorama(document.querySelector('#panorama'), panoramaOptions)
+// 		} else {
+// 			env.infoWindow.setContent(
+// 				`<div>
+// 						<h2>${marker.title}</h2>
+// 						<p>No Street View Found</p>
+// 					</div>`
+// 			)
+// 		}
+// 	}
+// 	streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView)
+// }

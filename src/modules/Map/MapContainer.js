@@ -1,14 +1,16 @@
 import React, { Component, createContext } from 'react';
 import Map from './Map';
-import { yelp } from '../../env/variables'
 import mapStyles from './styles/assasinsCreed'
 import './MapContainer.css'
 import SearchesContainer from './components/Searches/SearchesContainer'
-
+import Marker from './components/Marker/Marker'
 import googleMapInit from './_utils/googleMapsInitializer'
 import { newMarker, showMarker, hideMarker } from './_utils/marker'
 import { getDistance } from './_utils/map'
-import { yelpRequest } from './actions/SearchesActions'
+import { yelpTermRequest } from './_utils/yelpApiCaller'
+import { dictionaryToArray, arrayToDictionary } from './_utils/dictionaryHandler'
+import InfoWindow from './components/Marker/elements/InfoWindow'
+import StreetView from './components/StreetView/StreetView'
 
 const MapContext = createContext('elo')
 export const MapProvider = MapContext.Provider
@@ -18,59 +20,53 @@ class MapContainer extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			map: {},
-			google: '',
 			markers: {},
 			polygon: null,
-			selected: []
+			selected: [],
+			infoWindowMarker: {},
 		}
 		googleMapInit.bind(this)({styles: mapStyles})
 	}
 
-	handleSearch = (term) => {
-		// handling recived markers
+	handleSearch = (input) => {
 		const position = {
 			lat: 51.5074,
 			lng: -0.1269
 		}
-		term = term.toString().trim()
-		yelpRequest.bind(this)(`term=${term}&latitude=${position.lat}&longitude=${position.lng}&limit=25`, term)
+		const term = input.toString().trim()
+		yelpTermRequest(term, position)
 			.then(res => {
-				let destinations = []
-				const markers = res.markers.map(marker => {
-					marker.setMap(this.map)
-					destinations.push({
-						lat: marker.position.lat(),
-						lng: marker.position.lng(),
-					})
+				console.log(res)
+				const markers = res.businesses.map(business => {
+					const { coordinates, name, phone } = business
+					const { latitude, longitude } = coordinates
+					const marker = {
+						position: {lat: latitude, lng: longitude},
+						name,
+						term,
+						phone,
+						active: true
+					}
 					return marker
 				})
-				this.setState({markers: {
+				this.setState({
+					markers: {
 						...this.state.markers,
 						[term]: markers
-					}}, () => {
-					this.getDistance({
-						origins: [{ lat: 51.5074, lng: -0.1269 }],
-						destinations
-					}, (data) => {
-						const markers = this.state.markers[term].map((marker, idx) => {
-							marker.destination = data.rows[0].elements[idx]
-							return marker
-						})
-						this.setState({
-							markers: {
-								...this.state.markers,
-								[term]: markers
-							}})
-					})
+					}
 				})
 			})
 			.catch(console.error)
 	}
 
+
+
 	updateState = (update) => {
-		console.log(update: update)
 		this.setState(update)
+	}
+
+	handleInfo = (e) => {
+		console.log(e)
 	}
 
 	handleDistance = () => {
@@ -82,27 +78,62 @@ class MapContainer extends Component {
 		})
 	}
 
+	toggleMarkers = (params={}, active=true) => {
+		const { marker={}, markers } = params
+		const { term, name } = marker
+		const stateMarkers = this.state.markers
+
+		if(markers) {
+			const arrayState = dictionaryToArray(stateMarkers).map(stateMarker => {
+				if(markers.some(marker => marker.name === stateMarker.name)) {
+					return {...stateMarker, active}
+				}
+				return { ...stateMarker, active: !active }
+			})
+			console.log(arrayToDictionary(arrayState, 'term'))
+			return this.setState({
+				markers: { ...stateMarkers, ...arrayToDictionary(arrayState, 'term') }
+			})
+		}
+
+		if(term) {
+			this.setState({
+				markers: {
+					...stateMarkers,
+					[term]: stateMarkers[term].map(marker => {
+						if(name) {
+							if(marker.name === name) return {...marker, active}
+							return marker
+						}
+						return {...marker, active}
+					})
+				}
+			})
+		}
+	}
+
 	render() {
-		const {
-			markers,
-			distance
-		} = this.state
+		const { markers, distance, infoWindowMarker } = this.state
 		return (
 			<MapProvider value={{
-				markers: markers,
+				markers,
+				infoWindowMarker,
 				google: this.google,
 				map: this.map,
+				streetViewService: this.streetViewService,
 				actions: {
 					showMarker: showMarker.bind(this),
 					hideMarker: hideMarker.bind(this),
+					newMarker: newMarker.bind(this),
 				},
 				updateState: this.updateState
 			}}>
 				<section className="map">
 					<aside className="map__sidebar">
 						<button onClick={() => console.log(this.state)}>state</button>
-						<button onClick={() => this.showMarker(markers.coffe)}>show</button>
-						<button onClick={() => this.hideMarker(markers.coffe)}>hide</button>
+						<button onClick={() => this.setState({elo: 'siema'})}>state</button>
+						<button onClick={() => this.toggleMarkers({markers: [...markers.coffe, ...markers.bowling]})}>show</button>
+						<button onClick={() => this.toggleMarkers({markers: [...markers.coffe, ...markers.bowling]}, false)}>hide</button>
 						<button onClick={() => this.toggleDrawing(this.drawingManager)}>draw</button>
 						<form onSubmit={e => {
 							e.preventDefault()
@@ -120,12 +151,20 @@ class MapContainer extends Component {
 								</div>
 								: 'select points'}
 						</div>
-						<SearchesContainer updateState={this.updateState}
-															 showMarker={this.showMarker}
-															 hideMarker={this.hideMarker}
-						/>
+						{dictionaryToArray(markers).map((marker, idx) =>
+							<Marker key={idx + marker.name} data={marker}></Marker>
+						)}
+						{/*<SearchesContainer updateState={this.updateState}*/}
+						{/*showMarker={this.showMarker}*/}
+						{/*hideMarker={this.hideMarker}*/}
+						{/*/>*/}
 					</aside>
-					<Map />
+					<Map>
+						<InfoWindow>
+							<p>{this.state.infoWindowMarker.name}</p>
+							<StreetView position={this.state.infoWindowMarker.position}/>
+						</InfoWindow>
+					</Map>
 				</section>
 			</MapProvider>
 		)
@@ -133,3 +172,44 @@ class MapContainer extends Component {
 }
 
 export default MapContainer
+
+// handleSearch = (term) => {
+// 	// handling recived markers
+// 	const position = {
+// 		lat: 51.5074,
+// 		lng: -0.1269
+// 	}
+// 	term = term.toString().trim()
+// 	yelpRequest.bind(this)(`term=${term}&latitude=${position.lat}&longitude=${position.lng}&limit=25`, term)
+// 		.then(res => {
+// 			let destinations = []
+// 			const markers = res.markers.map(marker => {
+// 				marker.setMap(this.map)
+// 				destinations.push({
+// 					lat: marker.position.lat(),
+// 					lng: marker.position.lng(),
+// 				})
+// 				return marker
+// 			})
+// 			this.setState({markers: {
+// 					...this.state.markers,
+// 					[term]: markers
+// 				}}, () => {
+// 				this.getDistance({
+// 					origins: [{ lat: 51.5074, lng: -0.1269 }],
+// 					destinations
+// 				}, (data) => {
+// 					const markers = this.state.markers[term].map((marker, idx) => {
+// 						marker.destination = data.rows[0].elements[idx]
+// 						return marker
+// 					})
+// 					this.setState({
+// 						markers: {
+// 							...this.state.markers,
+// 							[term]: markers
+// 						}})
+// 				})
+// 			})
+// 		})
+// 		.catch(console.error)
+// }

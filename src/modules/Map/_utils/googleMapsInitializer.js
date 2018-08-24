@@ -20,7 +20,7 @@ function googleMapInit (config) {
 		});
 		const google = window.google
 		const drawingManager = drawing(google, this)
-		this.infoWindow = new google.maps.InfoWindow()
+		// this.infoWindow = new google.maps.InfoWindow()
 		this.map = map
 		this.google = google
 		this.newMarker = newMarker
@@ -29,6 +29,7 @@ function googleMapInit (config) {
 		this.toggleDrawing = toggleDrawing
 		this.drawingManager = drawingManager
 		this.distanceMatrixService = new google.maps.DistanceMatrixService()
+		// this.streetViewService = new google.maps.StreetViewService()
 		this.getDistance = getDistance
 	}
 }
