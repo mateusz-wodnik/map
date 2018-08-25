@@ -34,11 +34,11 @@ export default React.forwardRef((props, ref) => (
 	</MapConsumer>
 ));
 
-const DisplayDistance = ({distance}) => (
+const DisplayDistance = ({distance, duration}) => (
 	<div>
 		<h1>distance:</h1>
 		{console.log(distance)}
 		<p>{distance.text}</p>
-		<p>{distance.duration}</p>
+		<p>{distance.text}</p>
 	</div>
 )

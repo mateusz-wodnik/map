@@ -4,7 +4,8 @@ import { getDistance } from '../../_utils/distance'
 
 class Distance extends Component {
 	state = {
-		distance: {}
+		distance: {},
+		duration: {}
 	}
 
 	componentDidUpdate(prevProps) {
@@ -23,6 +24,7 @@ class Distance extends Component {
 			})
 				.then(data => {
 					const { distance, duration } = data.rows[0].elements[0]
+					console.log(distance, duration)
 					this.setState({distance: {distance, duration}})
 				})
 				.catch(console.error)
@@ -30,8 +32,7 @@ class Distance extends Component {
 	}
 
 	render = () => {
-		const { distance } = this.state
-		return Children.map(this.props.children, child => cloneElement(child, {distance}))
+		return Children.map(this.props.children, child => cloneElement(child, {...this.state}))
 	}
 }
 

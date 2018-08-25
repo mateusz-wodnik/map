@@ -11,10 +11,10 @@ import Sidebar from '../Sidebar/Sidebar'
 import Marker from './components/Marker/Marker'
 import InfoWindow from './components/Marker/elements/InfoWindow'
 import StreetView from './components/StreetView/StreetView'
-import Distance from './components/Distance/Distance'
 
 import { dictionaryToArray, arrayToDictionary } from './_utils/dictionaryHandler'
 import { yelpTermRequest } from './_utils/yelpApiCaller'
+import { getCurrentPosition } from './_utils/geolocation'
 
 // Creating context for Map container component
 const MapContext = createContext('elo')
@@ -34,24 +34,27 @@ class MapContainer extends Component {
 	}
 
 	handleSearch = (input) => {
-		const position = {
-			lat: 51.5074,
-			lng: -0.1269
-		}
 		const term = input.toString().trim()
-		yelpTermRequest(term, position)
+
+		getCurrentPosition()
+			.then(position => yelpTermRequest(term, position))
 			.then(res => {
-				console.log(res)
+				if(!res.businesses.length) throw 'No places found'
+				const bounds = new this.google.maps.LatLngBounds()
 				const markers = res.businesses.map(business => {
 					const { coordinates, name, phone } = business
 					const { latitude, longitude } = coordinates
-					return {
-						position: {lat: latitude, lng: longitude},
+					const position = { lat: latitude, lng: longitude }
+					const marker = {
+						position,
 						name,
 						term,
 						phone,
 						active: true
 					}
+
+					bounds.extend(position)
+					return marker
 				})
 				this.setState({
 					markers: {
@@ -59,7 +62,13 @@ class MapContainer extends Component {
 						[term]: markers
 					}
 				})
+				// First map should pan to center of created bounds and after that fit to this bounds
+				this.map.panTo(bounds.getCenter())
+				this.google.maps.event.addListenerOnce(this.map, 'idle', () => {
+					this.map.fitBounds(bounds)
+				})
 			})
+			.catch(console.error)
 			.catch(console.error)
 	}
 

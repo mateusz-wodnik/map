@@ -38,9 +38,7 @@ class Marker extends Component {
 		marker.addListener('click', () => {
 			const { selected } = this.props.context
 
-			const update = {
-				infoWindowMarker: marker,
-			}
+			const update = { infoWindowMarker: marker }
 			if(selected.some(marker => marker.name === this.marker.name)) {
 				update.selected = selected.filter(marker => marker.name !== this.marker.name)
 			} else {
