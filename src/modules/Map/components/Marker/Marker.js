@@ -14,17 +14,23 @@ class Marker extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { map } = this.props.context
-		const { active } = this.props.data
+		const { google, map } = this.props.context
+		const { active, animation } = this.props.data
+
+		// "active" parameter handles visibility of marker.
 		if(prevProps.data.active !== active) {
 			active ? this.marker.setMap(map) : this.marker.setMap(null)
+		}
+			console.log(prevProps.data.animation, animation)
+		if(prevProps.data.animation !== animation) {
+			this.marker.setAnimation(google.maps.Animation[animation])
 		}
 	}
 
 	render = () => null
 
 	newMarker = (data) => {
-		const { google, map, updateState } = this.props.context
+		const { google, map, updateState, selected } = this.props.context
 		const { position, name, ...prop } = data
 
 		const marker = new google.maps.Marker({
@@ -36,13 +42,18 @@ class Marker extends Component {
 		})
 
 		marker.addListener('click', () => {
-			const { selected } = this.props.context
-
+			const { selected, updateMarkers } = this.props.context
+			const { name, term } = this.marker
 			const update = { infoWindowMarker: marker }
+
 			if(selected.some(marker => marker.name === this.marker.name)) {
 				update.selected = selected.filter(marker => marker.name !== this.marker.name)
+				updateMarkers({name, term}, {animation: null})
+
 			} else {
+				console.log(name, term)
 				update.selected = [...selected, this.marker]
+				updateMarkers({name, term}, { animation: 'BOUNCE' })
 			}
 			updateState(update)
 		})

@@ -1,0 +1,27 @@
+.search-result {
+  margin-bottom: 10px;
+  border: 2px solid; }
+  .search-result__mask {
+    padding: 10px;
+    background-size: cover;
+    background-position: center;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    transition: 0.4s; }
+    .search-result__mask:hover {
+      background: rgba(0, 0, 0, 0.8); }
+  .search-result__header {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0; }
+  .search-result__name {
+    margin: 0; }
+  .search-result__rate {
+    margin-left: auto;
+    padding: 5px;
+    border-radius: 10px; }
+  .search-result__footer {
+    display: flex;
+    padding: 10px; }
+  .search-result__link {
+    margin-left: auto; }

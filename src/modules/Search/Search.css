@@ -1,0 +1,10 @@
+.search {
+  display: flex; }
+  .search__term, .search__submit {
+    font-size: 1.2em;
+    padding: 10px;
+    border-radius: 0;
+    border: 0;
+    height: 100%; }
+  .search__term {
+    flex: 1; }

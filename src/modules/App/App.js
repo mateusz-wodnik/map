@@ -6,7 +6,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-				<MapContainer />
+				<MapContainer config={{
+					libraries: ['drawing', 'geometry'],
+					apiKey: 'AIzaSyD8yZTbBcEeiSy7J9Tn8dMCyQneAM3DQAA',
+				}}/>
       </div>
     );
   }

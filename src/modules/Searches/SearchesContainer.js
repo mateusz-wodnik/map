@@ -1,29 +1,34 @@
 import React, { Component } from 'react';
 import Searches from './Searches'
 
-import { MapConsumer } from '../Map/MapContainer'
-import Search from './Search'
+import { MapConsumer } from '../Map/MapContainer';
 
 class SearchesContainer extends Component {
 
 	handleToggle = (e) => {
 		const { checked, id, dataset, name } = e.target
-		const { toggleMarkers } = this.props.context
+		const { updateMarkers } = this.props.context
 
+		// Check if event was triggered by single marker checkbox or term checkbox and update main map state
 		switch (name) {
 			case 'term':
-				toggleMarkers({term: id}, checked)
+				updateMarkers({term: id}, {active: checked})
 				break
 			case 'marker':
-				toggleMarkers({term: dataset.term, name: id}, checked)
+				updateMarkers({term: dataset.term, name: id}, {active: checked})
 				break
 		}
 	}
 
 	render() {
-		const { markers } = this.props.context
+		const { markers, state, searchYelpTerm } = this.props.context
 
-		return <Searches toggleMarkers={this.handleToggle} markers={markers} />
+		return <Searches updateMarkers={this.handleToggle}
+										 totals={state.totals}
+										 moreRecords={searchYelpTerm}
+										 markers={markers}
+										 filters={this.props.filters}
+		/>
 	}
 }
 

@@ -22,6 +22,7 @@ function googleMapInit (config) {
 					styles,
 				});
 				const google = window.google
+				console.log(google)
 				// const drawingManager = drawing(google, this)
 				// this.infoWindow = new google.maps.InfoWindow()
 				this.map = map
