@@ -136,7 +136,6 @@ class MapContainer extends Component {
 							<p>{infoWindowMarker.name}</p>
 							<StreetView position={infoWindowMarker.position}/>
 						</InfoWindow>
-						<Distance />
 					</Map>
 				</section>
 			</MapProvider>

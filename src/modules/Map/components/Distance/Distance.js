@@ -1,51 +1,38 @@
-import React, { Component } from 'react';
+import React, { Component, Children, cloneElement } from 'react';
 import { MapConsumer } from '../../MapContainer'
+import { getDistance } from '../../_utils/distance'
 
 class Distance extends Component {
+	state = {
+		distance: {}
+	}
 
-	componentDidUpdate(prevProps, prevState) {
-		const { google, map, state, updateState } = this.props.context
-		const { selected } = state
-		console.log('elo')
-		if(prevProps.context.google !== google) {
-			console.log(selected)
-			this.distanceMatrixService = new google.maps.DistanceMatrixService()
-			const elo = this.getDistance({
-				origins: [selected[0].getPosition()],
-				destinations: [selected[1].getPosition()],
+	componentDidUpdate(prevProps) {
+		const { selected } = this.props.context.state
+		if(prevProps.context.state.selected !== selected && selected.length > 1) {
+			const lastIndex = selected.length - 1
+			getDistance({
+				origins: [{
+					lat: selected[lastIndex - 1].getPosition().lat(),
+					lng: selected[lastIndex - 1].getPosition().lng(),
+				}],
+				destinations: [{
+					lat: selected[lastIndex].getPosition().lat(),
+					lng: selected[lastIndex].getPosition().lng(),
+				}],
 			})
-			console.log(elo)
+				.then(data => {
+					const { distance, duration } = data.rows[0].elements[0]
+					this.setState({distance: {distance, duration}})
+				})
+				.catch(console.error)
 		}
 	}
 
-	getDistance = (config = {}) => {
-		const { google } = this.props.context
-		const {
-			origins = ['Washington,DC'],
-			destinations = ['New+York+City,NY'],
-			travelMode = 'BICYCLING',
-			unitSystem = 'IMPERIAL',
-			avoid = 'highways',
-		} = config
-
-		this.distanceMatrixService.getDistanceMatrix({
-			origins,
-			destinations,
-			travelMode: google.maps.TravelMode[travelMode],
-			unitSystem: google.maps.UnitSystem[unitSystem],
-		}, (data, status) => {
-			console.log(status)
-			if(status !== google.maps.DistanceMatrixStatus.OK) return
-			const { distance, duration } = data.rows[0].elements[0]
-			return {
-				text: distance.text,
-				duration: duration.text
-			}
-		})
+	render = () => {
+		const { distance } = this.state
+		return Children.map(this.props.children, child => cloneElement(child, {distance}))
 	}
-
-
-	render = () => this.props.children || null
 }
 
 export default React.forwardRef((props, ref) => (
