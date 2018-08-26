@@ -9,16 +9,22 @@ Small place searching app with Google Maps and Yelp API for places requests. Sma
 
 ## Usage
 ```bash
-# To install dev-dependencies, just go to the root folder and run
+# To install client dev-dependencies, just go to the root folder and run
+npm i
+
+# To install server dev-dependencies, just go to the '/server' folder and run
 npm i
 
 # To build production version run from root folder
 npm run build
 
+# To run fresh build use server in '/server'
+npm run start-server
+
 # To run dev version run from root folder
 npm start
 
-Server is running on port 5000, and client is using a proxy in package.json to this port.
+Server is running on port 5000, and client in dev-mode is using a proxy in package.json to this port.
 ```
 
 ## Demo
