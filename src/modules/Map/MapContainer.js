@@ -28,6 +28,7 @@ class MapContainer extends Component {
 			polygon: null,
 			selected: [],
 			infoWindowMarker: {},
+			mapError: false
 		}
 	}
 
@@ -39,17 +40,25 @@ class MapContainer extends Component {
 		document.head.appendChild(script)
 		script.onload = (e) => {
 			// When script load and is available in window, update state with "google" object
-			this.setState({google: window.google})
+			this.setState({
+				google: window.google,
+				mapError: false
+			})
+		}
+		script.onerror = (err) => {
+			this.setState({mapError: true})
+			console.error("Couldn't load Google Maps")
 		}
 	}
 
 	render = () => {
-		const { markers, infoWindowMarker, selected, google, map } = this.state
+		const { markers, infoWindowMarker, selected, google, map, mapError } = this.state
 		return (
 			// Creating shared context with state management methods and Google Maps API related variables
 			<MapProvider value={{
 				google,
 				map,
+				mapError,
 				markers,
 				infoWindowMarker,
 				updateMarkers: this.updateMarkers,
@@ -59,7 +68,7 @@ class MapContainer extends Component {
 				searchYelpTerm: this.searchYelpTerm,
 			}}>
 				<section className="map-container">
-					<Sidebar handleSearch={this.handleSearch} />
+					<Sidebar handleSearch={this.handleSearch} mapError={mapError}/>
 					<Map config={{}}>
 						{dictionaryToArray(markers).map((marker, idx) =>
 							<Marker key={idx + marker.name} data={marker} />

@@ -35,12 +35,23 @@ class Map extends Component {
 	}
 
 	// Rendering a wrapper for new Google Maps map instance
-	render = () => (
-		<section className="map__instance">
-			<div id="map" style={{height: "100vh"}}></div>
-			{this.props.children}
-		</section>
-	)
+	render = () => {
+		if(this.props.context.mapError) {
+			return (
+				<section className="map-error">
+					<h1>Could not load Google Maps.</h1>
+					<p>Please check your internet connection and refresh the page.</p>
+				</section>
+			)
+		} else {
+			return (
+				<section className="map__instance">
+					<div id="map" style={{height: "100vh"}}></div>
+					{this.props.children}
+				</section>
+			)
+		}
+	}
 }
 
 export default React.forwardRef((props, ref) => (

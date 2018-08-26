@@ -6,6 +6,8 @@
   flex: 1;
   display: flex;
   flex-flow: column; }
+  .map__sidebar--error {
+    opacity: 0.3; }
 
 .map__instance {
   flex: 2; }
@@ -19,3 +21,11 @@
     grid-template: 100vh / 1fr 2fr; }
   .map__sidebar {
     height: 100vh; } }
+
+.map-error {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background: #404040;
+  color: #ffff00; }
