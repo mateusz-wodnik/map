@@ -3,7 +3,8 @@ import fetch from 'node-fetch'
 export const yelp = {
 	url: 'https://api.yelp.com/v3',
 	clientID: 'PduF5ukaaCgs0GTq4PG8JQ',
-	APIKey: 'ByytstaKQ5EfLQrjKNGMZa15_2OLjVyroGsIqpRnjjWovcqGBf3XrJ5s36ZNzf_Y_tpDLUOiRPeDFrQRpouRxa0K85ebVrgTrq7l0VPB-sQKHF_kaqrm9lCcuG1vW3Yx',
+	// Here's place for Yelp APIKey
+	APIKey: '',
 }
 
 
