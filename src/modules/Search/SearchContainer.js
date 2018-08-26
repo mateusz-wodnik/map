@@ -14,8 +14,13 @@ class SearchContainer extends Component {
 		const term = e.target.term.value.toString().trim()
 		e.target.term.value = ''
 		this.props.context.searchYelpTerm(term)
-			.then(res => this.setState({loading: false}))
-			.catch(err => this.setState({loading: false, error: true}))
+			.then(res => {
+				if (res.error) throw res.error
+				this.setState({loading: false, error: false})
+			})
+			.catch(err => {
+				this.setState({loading: false, error: err})
+			})
 	}
 
 	render = () => <Search loading={this.state.loading} error={this.state.error} handleSearch={this.handleSearch}/>

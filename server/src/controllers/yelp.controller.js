@@ -16,6 +16,9 @@ export function getCompanies(req, res) {
 		}
 	})
 		.then(res => res.json())
-		.then(data => res.send(data))
-		.catch(err => res.send(err))
+		.then(data => {
+			if(data.error) throw data
+			res.send(data)
+		})
+		.catch(err => res.status(401).send(err))
 }

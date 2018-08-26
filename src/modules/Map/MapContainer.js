@@ -28,7 +28,7 @@ class MapContainer extends Component {
 			polygon: null,
 			selected: [],
 			infoWindowMarker: {},
-			mapError: false
+			mapError: false,
 		}
 	}
 
@@ -144,7 +144,8 @@ class MapContainer extends Component {
 		// Then calls Yelp API with recived actual position.
 			.then(position => yelpTermRequest(term, position, {offset: markers[term] ? markers[term].length : 0}))
 			.then(yelp => {
-				if(!yelp.businesses.length) throw Error('No places found')
+				if(yelp.error) throw yelp
+				if(!yelp.businesses.length) throw {error: {description: 'No records, try again'}}
 				const { google, map, markers, totals } = this.state
 
 				const prevMarkers = markers[term] || []
@@ -182,8 +183,9 @@ class MapContainer extends Component {
 					// Then map should fit to bounds.
 					map.fitBounds(bounds)
 				})
+				return 'OK'
 			})
-			.catch((err) => alert(err))
+			.catch(err => err)
 	}
 }
 
