@@ -1,7 +1,7 @@
 import React from 'react';
 import './SearchResult.css'
 
-const SearchResult = ({ marker, term, handleHover }) => {
+const SearchResult = ({ openFocus, marker, term, handleHover }) => {
 	const { name, phone, display_phone, location, rating, url, distance, image_url, active } = marker
 	return (
 		<article onMouseOver={() => handleHover(name, term, true)}
@@ -13,6 +13,7 @@ const SearchResult = ({ marker, term, handleHover }) => {
 				<header className="search-result__header">
 					<h3	className="search-result__name">{name}</h3>
 					<input type="checkbox"
+								 tabIndex={openFocus ? 0 : -1}
 								 name="marker"
 								 id={name}
 								 data-term={term}
@@ -23,11 +24,11 @@ const SearchResult = ({ marker, term, handleHover }) => {
 				</header>
 				<article className="search-result__content">
 					<p className="search-result__distance">{`${Math.round(distance / 100)} meters`}</p>
-					<a className="search-result__phone" href={`tel:${phone}`}>{display_phone}</a>
+					<a tabIndex={openFocus ? 0 : -1} className="search-result__phone" href={`tel:${phone}`}>{display_phone}</a>
 					<address className="search-result__address">{location.display_address[0]}</address>
 				</article>
 				<footer className="search-result__footer">
-					<a className="search-result__link" href={url}>See more on Yelp...</a>
+					<a tabIndex={openFocus ? 0 : -1} className="search-result__link" href={url}>See more on Yelp...</a>
 				</footer>
 			</div>
 		</article>

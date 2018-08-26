@@ -4,7 +4,8 @@ import SearchResult from './SearchResult'
 
 class Searches extends Component {
 	state = {
-		selected: []
+		selected: [],
+		openFocus: false
 	}
 	// Updating state on sorting options change
 	handleSelect = (e) => {
@@ -25,7 +26,7 @@ class Searches extends Component {
 			<section className="searches" onChange={updateMarkers}>
 				{Object.keys(markers).map((name, idx) => (
 					<div key={name + idx} className={`searches__term searches__term--${name}`}>
-						<input type="checkbox" className="searches__open" />
+						<input type="checkbox" aria-label="open dropdown" className="searches__open" onChange={(e) => this.setState({openFocus: e.target.checked})} />
 						<header className="searches__header">
 							<h2 className="searches__name">{name}</h2>
 							<select defaultValue="" onChange={this.handleSelect} className="searches__filter" name="filter" id="filter">
@@ -45,9 +46,10 @@ class Searches extends Component {
 						<section className="searches__list">
 							{this.handleSorting(markers[name], this.state.selected).map((marker, idx) => (
 								<SearchResult key={marker.name+idx}
-												term={name}
-												marker={marker}
-												handleHover={handleHover}
+															openFocus={this.state.openFocus}
+															term={name}
+															marker={marker}
+															handleHover={handleHover}
 								/>
 							))}
 						</section>

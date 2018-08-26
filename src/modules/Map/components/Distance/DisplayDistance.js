@@ -3,7 +3,7 @@ import './DisplayDistance.css'
 
 const DisplayDistance = ({origin, addresses, destinations}) => (
 	<div>
-		<h1 className="origin,">Your location: {origin}</h1>
+		<h1 className="origin">Your location: {origin}</h1>
 		<div className="distances">
 			{addresses.map((address, idx) => {
 				return (
