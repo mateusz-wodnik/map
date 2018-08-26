@@ -1,0 +1,15 @@
+.origin {
+  margin: 15px 15px; }
+
+.distances {
+  max-height: 30vh;
+  overflow: auto;
+  padding: 15px; }
+  .distances__address {
+    display: flex;
+    margin-bottom: 15px; }
+    .distances__address h5 {
+      margin: 0;
+      flex: 3; }
+    .distances__address time {
+      flex: 1; }

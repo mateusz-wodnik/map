@@ -1,10 +1,14 @@
 import React from 'react';
 import './SearchResult.css'
 
-const SearchResult = ({ marker, term }) => {
+const SearchResult = ({ marker, term, handleHover }) => {
 	const { name, phone, display_phone, location, rating, url, distance, image_url, active } = marker
-	return(
-		<article className="searches__search search-result" style={{backgroundImage: `url(${image_url})`}}>
+	return (
+		<article onMouseOver={() => handleHover(name, term, true)}
+						 onMouseOut={() => handleHover(name, term, false)}
+						 className="searches__search search-result"
+						 style={{backgroundImage: `url(${image_url})`}}
+		>
 			<div className="search-result__mask">
 				<header className="search-result__header">
 					<h3	className="search-result__name">{name}</h3>

@@ -1,8 +1,6 @@
 import React, { Component, createContext } from 'react';
 
-import mapStyles from './styles/assasinsCreed'
 import './MapContainer.css'
-
 
 import Map from './Map';
 import Sidebar from '../Sidebar/Sidebar'
@@ -33,12 +31,14 @@ class MapContainer extends Component {
 		}
 	}
 
+	// Loading Google Maps scripts right after mounting map container
 	componentDidMount() {
 		const { libraries, apiKey } = this.props.config
 		const script = document.createElement( 'script' );
 		script.src = `https://maps.googleapis.com/maps/api/js?libraries=${libraries.toString()}&key=${apiKey}`;
 		document.head.appendChild(script)
 		script.onload = (e) => {
+			// When script load and is available in window, update state with "google" object
 			this.setState({google: window.google})
 		}
 	}
@@ -46,6 +46,7 @@ class MapContainer extends Component {
 	render = () => {
 		const { markers, infoWindowMarker, selected, google, map } = this.state
 		return (
+			// Creating shared context with state management methods and Google Maps API related variables
 			<MapProvider value={{
 				google,
 				map,
@@ -79,11 +80,11 @@ class MapContainer extends Component {
 	updateMapState = (update) => this.setState(update)
 
 	/**
-	 * Updating state.markers dictionary helper
+	 * Updating state.markers dictionary helper. It is able to update arrays of markers, whole terms arrays and single elements.
 	 * @param params {markers: [{name: ''}] || term: '' || term: '' && name: ''} - describing particular marker or array of markers
 	 * @param update {} - parameters to update
 	 */
-	updateMarkers = (params={}, update={active: true}) => {
+	updateMarkers = (params={}, update={}) => {
 		const { markers, term, name } = params
 		const prevMarkers = this.state.markers
 
@@ -100,17 +101,20 @@ class MapContainer extends Component {
 			})
 		}
 
-		// Update whole term array or single marker
+		// Update whole term array in state...
 		if(term) {
 			this.setState({
 				markers: {
 					...prevMarkers,
 					[term]: prevMarkers[term].map(marker => {
+						// ... or single marker.
 						if(name) {
-							console.log(term, name, update)
-							if(marker.name === name) return {...marker, ...update}
+							if(marker.name === name) {
+								return {...marker, ...update}
+							}
 							return marker
 						}
+						if(this.state.selected.some(item => item.name === marker.name)) return marker
 						return {...marker, ...update}
 					})
 				}
@@ -118,15 +122,20 @@ class MapContainer extends Component {
 		}
 	}
 
+	/**
+	 * This function is managing responses from geolocation and Yelp API. It handles related with those async actions state updates.
+	 * @param input - string to search
+	 * @return {Promise<any | void>}
+	 */
 	searchYelpTerm = (input) => {
 		const { markers } = this.state
 		const term = input.toString().trim()
 		//Function gets current position from HTML5 geolocation API.
-		getCurrentPosition()
+		return getCurrentPosition()
 		// Then calls Yelp API with recived actual position.
 			.then(position => yelpTermRequest(term, position, {offset: markers[term] ? markers[term].length : 0}))
 			.then(yelp => {
-				if(!yelp.businesses.length) throw 'No places found'
+				if(!yelp.businesses.length) throw Error('No places found')
 				const { google, map, markers, totals } = this.state
 
 				const prevMarkers = markers[term] || []
@@ -146,7 +155,6 @@ class MapContainer extends Component {
 					return marker
 				})
 
-				console.log(prevMarkers, newMarkers)
 				this.setState({
 					// Update main map state with fetched new markers
 					markers: {
@@ -166,8 +174,7 @@ class MapContainer extends Component {
 					map.fitBounds(bounds)
 				})
 			})
-			.catch(console.error)
-			.catch(console.error)
+			.catch((err) => alert(err))
 	}
 }
 

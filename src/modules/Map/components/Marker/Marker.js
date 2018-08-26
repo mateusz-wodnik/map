@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server'
 import { MapConsumer } from '../../MapContainer'
-import { streetView } from '../../_utils/marker'
-import ReactDOM from 'react-dom'
-import StreetView from '../StreetView/StreetView'
 
 class Marker extends Component {
 
@@ -13,24 +9,36 @@ class Marker extends Component {
 		this.marker = this.newMarker(data, showStreetView)
 	}
 
-	componentDidUpdate(prevProps, prevState) {
+	componentDidUpdate(prevProps) {
 		const { google, map } = this.props.context
-		const { active, animation } = this.props.data
+		const { active, animation, selected, hovered } = this.props.data
 
 		// "active" parameter handles visibility of marker.
 		if(prevProps.data.active !== active) {
 			active ? this.marker.setMap(map) : this.marker.setMap(null)
 		}
-			console.log(prevProps.data.animation, animation)
-		if(prevProps.data.animation !== animation) {
-			this.marker.setAnimation(google.maps.Animation[animation])
+
+		// Handles marker selection
+		if(prevProps.data.selected !== selected) {
+			this.marker.setAnimation(animation ? google.maps.Animation[animation] : null)
+		}
+
+		// Handles hover on sidebar item
+		if(prevProps.data.hovered !== hovered) {
+			const icon = hovered ? {path: google.maps.SymbolPath.CIRCLE, scale: 17} : null
+			this.marker.setIcon(icon)
 		}
 	}
 
 	render = () => null
 
+	/**
+	 * This function creates new marker with additional listeners
+	 * @param data - marker data
+	 * @return {*}
+	 */
 	newMarker = (data) => {
-		const { google, map, updateState, selected } = this.props.context
+		const { google, map, updateState } = this.props.context
 		const { position, name, ...prop } = data
 
 		const marker = new google.maps.Marker({
@@ -44,17 +52,21 @@ class Marker extends Component {
 		marker.addListener('click', () => {
 			const { selected, updateMarkers } = this.props.context
 			const { name, term } = this.marker
-			const update = { infoWindowMarker: marker }
+			const update = { }
 
+			// Catch only markers that are selected
 			if(selected.some(marker => marker.name === this.marker.name)) {
+				update.infoWindowMarker = {}
 				update.selected = selected.filter(marker => marker.name !== this.marker.name)
-				updateMarkers({name, term}, {animation: null})
-
+				// Remove animation and selected property from main map state
+				updateMarkers({name, term}, { animation: null, selected: false })
 			} else {
-				console.log(name, term)
+				update.infoWindowMarker = marker
 				update.selected = [...selected, this.marker]
-				updateMarkers({name, term}, { animation: 'BOUNCE' })
+				// Add animation to newly selected marker
+				updateMarkers({name, term}, { animation: 'BOUNCE', selected: true })
 			}
+			// Update info window and selected markers array in main map state
 			updateState(update)
 		})
 		return marker

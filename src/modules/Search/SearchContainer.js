@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
-import { getCurrentPosition } from '../Map/_utils/geolocation'
-import { yelpTermRequest } from '../Map/_utils/yelpApiCaller'
 import { MapConsumer } from '../Map/MapContainer'
 import Search from './Search'
 
 class SearchContainer extends Component {
-
-	handleSearch = (input) => {
-		const term = input.toString().trim()
-		this.props.context.searchYelpTerm(term)
+	state = {
+		loading: false,
+		error: false
 	}
 
-	render = () => <Search handleSearch={e => {
+	handleSearch = (e) => {
 		e.preventDefault()
-		this.props.context.searchYelpTerm(e.target.term.value)
-	}}/>
+		this.setState({loading: true, error: false})
+		const term = e.target.term.value.toString().trim()
+		e.target.term.value = ''
+		this.props.context.searchYelpTerm(term)
+			.then(res => this.setState({loading: false}))
+			.catch(err => this.setState({loading: false, error: true}))
+	}
+
+	render = () => <Search loading={this.state.loading} error={this.state.error} handleSearch={this.handleSearch}/>
 }
 
 export default React.forwardRef((props, ref) => (

@@ -1,4 +1,5 @@
 .searches
+  background: gray
   &__header
     display: flex
     flex-flow: row wrap
@@ -15,10 +16,29 @@
     width: 100%
     text-transform: uppercase
     margin: 10px 0
-  &__term
-    &:hover .searches__list
-      height: 300px
+  &__open
+    position: absolute
+    top: 10px
+    right: 10px
+    color: black
+    appearance: none
+    z-index: 1000
+    //transition: 0.3s
+    cursor: pointer
+    &:hover
+      color: white
+    &:after
+      content: "⯆"
+      font-size: 2em
+    &:checked
+      color: white
+    &:checked ~ .searches__list
+      height: 70vh
       overflow: auto
+  &__term
+    position: relative
+    &:hover .searches__list
+      //height: 70vh
   &__list
     transition: 0.4s
     height: 0
@@ -32,9 +52,6 @@
       font-size: 1.4em
     &:checked
       opacity: 1
-
-    &--term
-
 
 
 option[value=""][disabled]

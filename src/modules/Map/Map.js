@@ -3,8 +3,9 @@ import { getCurrentPosition } from './_utils/geolocation'
 import { MapConsumer } from './MapContainer'
 
 class Map extends Component {
-	componentWillUpdate(prevProps) {
-		const { updateState, google } = this.props.context
+	componentDidUpdate(prevProps) {
+		const { google } = this.props.context
+		// Create new Google Maps map instance
 		if(prevProps.context.google !== google) {
 			const {
 				center = { lat: 51.5074, lng: -0.1269 },
@@ -33,6 +34,7 @@ class Map extends Component {
 		}
 	}
 
+	// Rendering a wrapper for new Google Maps map instance
 	render = () => (
 		<section className="map__instance">
 			<div id="map" style={{height: "100vh"}}></div>

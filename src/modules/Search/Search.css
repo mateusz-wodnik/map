@@ -8,3 +8,24 @@
     height: 100%; }
   .search__term {
     flex: 1; }
+  .search__submit {
+    color: white;
+    font-size: 2em;
+    padding: 20px;
+    position: relative; }
+    .search__submit--loading {
+      animation: rotate 1s infinite; }
+  .search__icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0; }
+
+@keyframes rotate {
+  0% {
+    transform: rotateY(0deg); }
+  50% {
+    transform: rotateY(180deg); }
+  100% {
+    transform: rotateY(0deg); } }

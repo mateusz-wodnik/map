@@ -1,5 +1,6 @@
 .map-container {
-  display: flex; }
+  display: grid;
+  grid-template: 1fr 1fr / 100vw; }
 
 .map__sidebar {
   flex: 1;
@@ -12,3 +13,10 @@
 #map {
   position: sticky !important;
   top: 0; }
+
+@media (min-width: 700px) {
+  .map-container {
+    grid-template: 100vh / 1fr 2fr; }
+  .map__sidebar {
+    height: 100vh;
+    overflow: auto; } }

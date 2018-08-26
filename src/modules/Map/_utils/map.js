@@ -31,7 +31,6 @@ export function drawing(google, env) {
 		polygon.setEditable(true)
 
 		env.setState({polygon})
-		console.log('elo')
 
 		searchWithinPolygon(env)
 
@@ -53,7 +52,6 @@ export const searchWithinPolygon = (env) => {
 }
 
 export function toggleDrawing (manager) {
-	console.log('elo')
 	if(manager.map) {
 		manager.setMap(null)
 		if(this.state.polygon) this.state.polygon.setMap(null)
@@ -63,31 +61,3 @@ export function toggleDrawing (manager) {
 }
 
 /*******************************************************************************/
-
-/**
- * Distance Matrix
- */
-
-export function getDistance(config = {}, callback) {
-	const {
-		origins = ['Washington,DC'],
-		destinations = ['New+York+City,NY'],
-		mode = 'BICYCLING',
-		avoid = 'highways',
-	} = config
-	this.distanceMatrixService.getDistanceMatrix({
-		origins,
-		destinations,
-		travelMode: this.google.maps.TravelMode[mode],
-		unitSystem: this.google.maps.UnitSystem.IMPERIAL
-	}, (data, status) => {
-		console.log(status)
-		if(status !== this.google.maps.DistanceMatrixStatus.OK) return
-		const distance = {
-			text: data.rows[0].elements[0].distance.text,
-			duration: data.rows[0].elements[0].duration.text
-		}
-		if(callback) return callback(data)
-		this.setState({ distance })
-	})
-}

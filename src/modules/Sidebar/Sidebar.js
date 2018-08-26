@@ -1,17 +1,16 @@
 import React from 'react';
-import { MapConsumer } from '../Map/MapContainer'
 import SearchesContainer from '../Searches/SearchesContainer'
 import SearchContainer from '../Search/SearchContainer'
 import Distance from '../Map/components/Distance/Distance'
+import DisplayDistance from '../Map/components/Distance/DisplayDistance'
 
-const Sidebar = ({context}) => {
-	const { state } = context
+const Sidebar = () => {
 	return(
 		<aside className="map__sidebar">
 			<SearchContainer />
-			{/*<Distance>*/}
-				{/*<DisplayDistance />*/}
-			{/*</Distance>*/}
+			<Distance>
+				<DisplayDistance />
+			</Distance>
 			<SearchesContainer filters={{
 				best: (a, b) => a.rating < b.rating,
 				closest: (a, b) => a.distance < b.distance,
@@ -26,17 +25,4 @@ const Sidebar = ({context}) => {
 }
 
 
-export default React.forwardRef((props, ref) => (
-	<MapConsumer>
-		{context => <Sidebar {...props} context={context} ref={ref} />}
-	</MapConsumer>
-));
-
-const DisplayDistance = ({distance}) => (
-	<div>
-		<h1>distance:</h1>
-		{console.log(distance)}
-		<p>{distance.text}</p>
-		<p>{distance.text}</p>
-	</div>
-)
+export default Sidebar

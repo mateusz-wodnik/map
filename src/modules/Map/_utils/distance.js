@@ -1,3 +1,8 @@
+/**
+ * This function provides Distance Matrix Service in easly maintainable way using Promises.
+ * @param config
+ * @return {Promise<any>}
+ */
 export function getDistance (config = {}) {
 	const { google } = window
 	const distanceMatrixService = new google.maps.DistanceMatrixService()
@@ -6,7 +11,6 @@ export function getDistance (config = {}) {
 		destinations = ['New+York+City,NY'],
 		travelMode = 'BICYCLING',
 		unitSystem = 'IMPERIAL',
-		avoid = 'highways',
 	} = config
 
 	return new Promise((resolve, reject) => {

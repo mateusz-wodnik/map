@@ -1,3 +1,7 @@
+/**
+ * This function gets actual position of client with HTML5 geolocation API. It returns promise and handles errors.
+ * @return {Promise<any>}
+ */
 export function getCurrentPosition() {
 	return new Promise((resolve, reject) => {
 		if("geolocation" in navigator) {

@@ -5,7 +5,7 @@ class StreetView extends Component {
 	componentDidMount() {
 		const { google } = this.props.context
 		if(google) {
-			this.streetViewService = new google.maps.StreetViewService
+			this.streetViewService = new google.maps.StreetViewService()
 			this.radius = 50
 
 			const { position } = this.props

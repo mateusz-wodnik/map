@@ -1,41 +1,55 @@
 @charset "UTF-8";
-.searches__header {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  position: sticky;
-  top: 0;
-  padding: 10px;
-  overflow: hidden; }
-
-.searches__filter {
-  margin-left: 10px; }
-
-.searches__name {
-  width: 100%;
-  text-transform: uppercase;
-  margin: 10px 0; }
-
-.searches__term:hover .searches__list {
-  height: 300px;
-  overflow: auto; }
-
-.searches__list {
-  transition: 0.4s;
-  height: 0;
-  overflow: hidden; }
-
-.searches__toggle, .searches .search-result__toggle {
-  appearance: none;
-  opacity: 0.4;
-  transition: 0.2s; }
-  .searches__toggle:after, .searches .search-result__toggle:after {
-    content: "👁";
-    font-size: 1.4em; }
-  .searches__toggle:checked, .searches .search-result__toggle:checked {
-    opacity: 1; }
+.searches {
+  background: gray; }
+  .searches__header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    padding: 10px;
+    overflow: hidden; }
+  .searches__filter {
+    margin-left: 10px; }
+  .searches__name {
+    width: 100%;
+    text-transform: uppercase;
+    margin: 10px 0; }
+  .searches__open {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: black;
+    appearance: none;
+    z-index: 1000;
+    cursor: pointer; }
+    .searches__open:hover {
+      color: white; }
+    .searches__open:after {
+      content: "⯆";
+      font-size: 2em; }
+    .searches__open:checked {
+      color: white; }
+    .searches__open:checked ~ .searches__list {
+      height: 70vh;
+      overflow: auto; }
+  .searches__term {
+    position: relative; }
+  .searches__list {
+    transition: 0.4s;
+    height: 0;
+    overflow: hidden; }
+  .searches__toggle, .searches .search-result__toggle {
+    appearance: none;
+    opacity: 0.4;
+    transition: 0.2s; }
+    .searches__toggle:after, .searches .search-result__toggle:after {
+      content: "👁";
+      font-size: 1.4em; }
+    .searches__toggle:checked, .searches .search-result__toggle:checked {
+      opacity: 1; }
 
 option[value=""][disabled] {
   display: none; }
