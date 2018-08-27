@@ -21,7 +21,7 @@ class Searches extends Component {
 	}
 
 	render = () => {
-		const {updateMarkers, moreRecords, markers, filters, totals, handleHover} = this.props
+		const { updateMarkers, moreRecords, markers, filters, totals, handleHover } = this.props
 		return (
 			<section className="searches" onChange={updateMarkers}>
 				{Object.keys(markers).map((name, idx) => (

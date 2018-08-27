@@ -10,7 +10,8 @@ class Distance extends Component {
 		addresses: [],
 		destinations: [],
 		error: false,
-		loading: true
+		loading: true,
+		itemLoading: false
 	}
 
 	componentDidUpdate(prevProps) {
@@ -36,7 +37,8 @@ class Distance extends Component {
 				})
 		}
 
-		if(prevProps.context.state.selected !== selected && selected.length > 1) {
+		if(prevProps.context.state.selected !== selected && selected.length > 0) {
+			this.setState({itemLoading: true})
 			getCurrentPosition()
 				.then(position => {
 					const destinations = selected.map(marker => {
@@ -54,17 +56,21 @@ class Distance extends Component {
 					this.setState({
 						origin: data.originAddresses[0],
 						addresses: data.destinationAddresses,
-						destinations: data.rows[0].elements
+						destinations: data.rows[0].elements,
+						itemLoading: false
 					})
 				})
-				.catch(err => alert("Couldn't get location"))
+				.catch(err => {
+					this.setState({ itemLoading: false })
+					alert("Couldn't get location")
+				})
 		}
 	}
 
 	render = () => {
-		if(this.state.loading) return <Loader/>
+		const children = Children.map(this.props.children, child => cloneElement(child, {...this.state}))
 		// Passing new props from Distance component to children
-		return Children.map(this.props.children, child => cloneElement(child, {...this.state}))
+		return this.state.loading ? <Loader/> : children
 	}
 }
 

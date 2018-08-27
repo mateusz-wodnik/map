@@ -8,7 +8,8 @@
     height: 100%; }
   .search__term {
     background: #404040;
-    flex: 1; }
+    flex: 1;
+    transition: 0.4s; }
   .search__submit {
     background: #383838;
     color: white;

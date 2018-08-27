@@ -8,7 +8,7 @@ class SearchesContainer extends Component {
 	handleToggle = (e) => {
 		const { checked, id, dataset, name } = e.target
 		const { updateMarkers } = this.props.context
-		const update = {active: checked}
+		const update = { active: checked }
 
 		// Check if event was triggered by single marker checkbox or term checkbox and update main map state
 		switch (name) {

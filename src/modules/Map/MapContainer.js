@@ -12,6 +12,7 @@ import StreetView from './components/StreetView/StreetView'
 import { dictionaryToArray, arrayToDictionary } from './_utils/dictionaryHandler'
 import { getCurrentPosition } from './_utils/geolocation'
 import { yelpTermRequest } from './_utils/yelpApiCaller'
+import Welcome from '../Welcome/Welcome'
 
 // Creating context for Map container component
 const MapContext = createContext('elo')
@@ -29,7 +30,7 @@ class MapContainer extends Component {
 			selected: [],
 			infoWindowMarker: {},
 			mapError: false,
-			mapLoading: false
+			mapLoading: true
 		}
 	}
 
@@ -89,6 +90,7 @@ class MapContainer extends Component {
 						</InfoWindow>
 					</Map>
 				</section>
+				<Welcome />
 			</MapProvider>
 		)
 	}

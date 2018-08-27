@@ -23,7 +23,10 @@ class SearchContainer extends Component {
 			})
 	}
 
-	render = () => <Search loading={this.state.loading} error={this.state.error} handleSearch={this.handleSearch}/>
+	render = () => <Search loading={this.state.loading}
+												 error={this.state.error}
+												 handleSearch={this.handleSearch}
+	/>
 }
 
 export default React.forwardRef((props, ref) => (
