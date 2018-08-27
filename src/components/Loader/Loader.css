@@ -1,0 +1,57 @@
+:root {
+  --base-origin-x: -10%;
+  --base-origin-y: 50%; }
+
+.loader {
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 50px;
+  min-height: 50px; }
+  .loader__text {
+    margin-right: 40px; }
+  .loader__animation {
+    position: relative;
+    display: flex; }
+  .loader__icon {
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    border-radius: 10px;
+    background: black;
+    animation: spin 4s steps(16) infinite;
+    transform-origin: -40% 50%; }
+
+.loader.mask {
+  background: grey;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.loader__icon--1 {
+  animation-delay: 0.25s;
+  opacity: 0.8; }
+
+.loader__icon--2 {
+  animation-delay: 0.5s;
+  opacity: 0.4; }
+
+.loader__icon--3 {
+  animation-delay: 0.75s;
+  opacity: 0.26667; }
+
+.loader__icon--4 {
+  animation-delay: 1s;
+  opacity: 0.2; }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  50% {
+    transform: rotate(360deg); }
+  100% {
+    transform: rotate(720deg); } }

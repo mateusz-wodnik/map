@@ -10,6 +10,7 @@
     opacity: 0.3; }
 
 .map__instance {
+  position: relative;
   flex: 2; }
 
 #map {

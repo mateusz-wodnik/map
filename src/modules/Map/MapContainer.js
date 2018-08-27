@@ -29,12 +29,14 @@ class MapContainer extends Component {
 			selected: [],
 			infoWindowMarker: {},
 			mapError: false,
+			mapLoading: false
 		}
 	}
 
 	// Loading Google Maps scripts right after mounting map container
 	componentDidMount() {
 		const { libraries, apiKey } = this.props.config
+		this.setState({mapLoading: true})
 		const script = document.createElement( 'script' );
 		script.src = `https://maps.googleapis.com/maps/api/js?libraries=${libraries.toString()}&key=${apiKey}`;
 		document.head.appendChild(script)
@@ -45,20 +47,25 @@ class MapContainer extends Component {
 				mapError: false
 			})
 		}
+
 		script.onerror = (err) => {
-			this.setState({mapError: true})
+			this.setState({
+				mapLoading: false,
+				mapError: true
+			})
 			console.error("Couldn't load Google Maps")
 		}
 	}
 
 	render = () => {
-		const { markers, infoWindowMarker, selected, google, map, mapError } = this.state
+		const { markers, infoWindowMarker, selected, google, map, mapError, mapLoading } = this.state
 		return (
 			// Creating shared context with state management methods and Google Maps API related variables
 			<MapProvider value={{
 				google,
 				map,
 				mapError,
+				mapLoading,
 				markers,
 				infoWindowMarker,
 				updateMarkers: this.updateMarkers,

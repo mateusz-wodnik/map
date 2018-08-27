@@ -3,6 +3,7 @@ import SearchesContainer from '../Searches/SearchesContainer'
 import SearchContainer from '../Search/SearchContainer'
 import Distance from '../Map/components/Distance/Distance'
 import DisplayDistance from '../Map/components/Distance/DisplayDistance'
+import Loader from '../../components/Loader/Loader'
 
 const Sidebar = ({mapError}) => (
 	<aside className={`map__sidebar ${mapError && 'map__sidebar--error'}`} >

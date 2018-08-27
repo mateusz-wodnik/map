@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getCurrentPosition } from './_utils/geolocation'
 import { MapConsumer } from './MapContainer'
+import Loader from '../../components/Loader/Loader'
 
 class Map extends Component {
 	componentDidUpdate(prevProps) {
@@ -12,6 +13,7 @@ class Map extends Component {
 				zoom = 12,
 				styles = {},
 			} = this.props.config
+
 			getCurrentPosition()
 				.then(center => {
 					const { updateState, google } = this.props.context
@@ -19,6 +21,10 @@ class Map extends Component {
 						center,
 						zoom,
 						styles,
+					});
+					// End loading when tiles is loaded
+					map.addListener( 'tilesloaded', () => {
+						updateState({ mapLoading: false })
 					});
 					updateState({ map })
 				})
@@ -46,6 +52,7 @@ class Map extends Component {
 		} else {
 			return (
 				<section className="map__instance">
+					{this.props.context.mapLoading && <Loader mask={true}/>}
 					<div id="map" style={{height: "100vh"}}></div>
 					{this.props.children}
 				</section>

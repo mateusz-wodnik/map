@@ -2,12 +2,15 @@ import React, { Component, Children, cloneElement } from 'react';
 import { MapConsumer } from '../../MapContainer'
 import { getDistance } from '../../_utils/distance'
 import { getCurrentPosition } from '../../_utils/geolocation'
+import Loader from '../../../../components/Loader/Loader'
 
 class Distance extends Component {
 	state = {
 		origin: 'select',
 		addresses: [],
-		destinations: []
+		destinations: [],
+		error: false,
+		loading: true
 	}
 
 	componentDidUpdate(prevProps) {
@@ -16,16 +19,19 @@ class Distance extends Component {
 			getCurrentPosition()
 				.then(position => {
 					const geocoder = new this.props.context.google.maps.Geocoder()
-					geocoder.geocode({'location': position}, (res, status) => {
-						if(status === 'OK') {
-							if(res[0]) {
-								this.setState({origin: res[0].formatted_address})
-							} else {
-								window.alert('No results found')
-							}
-						} else {
-							window.alert('Geocoder failed')
-						}
+					return new Promise((resolve, reject) => {
+						geocoder.geocode({'location': position}, (res, status) => {
+							if(status !== 'OK') reject('Geocoder failed')
+							if(!res[0]) reject('No result found')
+							resolve(res[0].formatted_address)
+						})
+					})
+				})
+				.then(origin => this.setState({ origin, error: false, loading: false }))
+				.catch(err => {
+					this.setState({
+						error: err,
+						loading: false
 					})
 				})
 		}
@@ -56,6 +62,7 @@ class Distance extends Component {
 	}
 
 	render = () => {
+		if(this.state.loading) return <Loader/>
 		// Passing new props from Distance component to children
 		return Children.map(this.props.children, child => cloneElement(child, {...this.state}))
 	}

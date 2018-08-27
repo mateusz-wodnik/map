@@ -1,0 +1,47 @@
+\:root
+  --base-origin-x: -10%
+  --base-origin-y: 50%
+
+.loader
+  z-index: 2000
+  display: flex
+  justify-content: center
+  align-items: center
+  min-width: 50px
+  min-height: 50px
+  &__text
+    margin-right: 40px
+  &__animation
+    position: relative
+    display: flex
+  &__icon
+    display: block
+    position: absolute
+    width: 10px
+    height: 2px
+    border-radius: 10px
+    background: black
+    animation: spin 4s steps(16) infinite
+    transform-origin: -40% 50%
+
+.loader.mask
+  background: grey
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+
+@for $i from 1 to 5
+  .loader__icon--#{$i}
+    animation-delay: 0.25s * $i
+    opacity: 0.8 / $i
+
+
+@keyframes spin
+  0%
+    transform: rotate(0deg)
+  50%
+    transform: rotate(360deg)
+  100%
+    transform: rotate(720deg)
