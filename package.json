@@ -8,10 +8,11 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
+    "start": "npm run build && node server/dist/server.js",
     "build-css": "node-sass-chokidar src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p start-server watch-css start-js",
+    "dev": "npm-run-all -p start-server watch-css start-js",
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
     "start-server": "cd server && gulp",
