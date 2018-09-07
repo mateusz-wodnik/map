@@ -76,7 +76,7 @@ class MapContainer extends Component {
 				searchYelpTerm: this.searchYelpTerm,
 			}}>
 				<section className="map-container">
-					<Sidebar handleSearch={this.handleSearch} mapError={mapError}/>
+					<Sidebar mapError={mapError}/>
 					<Map config={{}}>
 						{dictionaryToArray(markers).map((marker, idx) =>
 							<Marker key={idx + marker.name} data={marker} />
