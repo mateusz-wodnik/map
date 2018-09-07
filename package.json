@@ -8,14 +8,15 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "start": "npm run build && node server/dist/server.js",
+    "start": "npm run build && cd server && gulp && node server/dist/server.js",
     "build-css": "node-sass-chokidar src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start-js": "react-scripts start",
     "dev": "npm-run-all -p start-server watch-css start-js",
+    "build": "npm-run-all build-server build-client && cp -r build production",
     "build-js": "react-scripts build",
-    "build": "npm-run-all build-css build-js build-server",
-    "build-server": "cd server && gulp server",
+    "build-client": "npm-run-all build-css build-js",
+    "build-server": "cd server && gulp server && mkdir -p ../production && cp -r package.json ../production && cd dist && cp -r * ../../production ",
     "start-server": "cd server && gulp",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
