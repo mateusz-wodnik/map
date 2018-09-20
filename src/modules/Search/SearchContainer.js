@@ -16,7 +16,8 @@ class SearchContainer extends Component {
 		this.props.context.searchYelpTerm(term)
 			.then(res => {
 				if (res.error) throw res.error
-				this.setState({loading: false, error: false})
+                this.props.callback(false)
+                this.setState({loading: false, error: false})
 			})
 			.catch(err => {
 				this.setState({loading: false, error: err})

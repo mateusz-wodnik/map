@@ -9,11 +9,17 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: grey; }
+  background: grey;
+  color: white; }
   .welcome__hide {
     margin-top: 10px;
     border-radius: 0;
     border: 0;
     font-size: 1.2em;
     padding: 10px;
-    background: #383838; }
+    background: #383838;
+    cursor: pointer;
+    color: white; }
+    .welcome__hide:disabled {
+      opacity: 0.6;
+      cursor: default; }
